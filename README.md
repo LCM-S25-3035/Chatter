@@ -20,3 +20,5 @@ Chatter is a document-aware conversational AI framework that combines:
 ### 🧰 Stack
 LangChain • OpenAI / Hugging Face • FAISS • ChromaDB • FastAPI • RLHF
 
+....
+
