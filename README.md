@@ -1,24 +1,4 @@
 # Chatter
-## 🧠 Chatter: Modular RAG-RLHF Chatbot
 
-Chatter is a document-aware conversational AI framework that combines:
-- **RAG (Retrieval-Augmented Generation)** for grounded responses
-- **RLHF (Reinforcement Learning from Human Feedback)** for continuous improvement
-
-### 🔧 Features
-- Embedding + Vector Store (FAISS/ChromaDB)
-- LangChain-powered retrieval & response pipeline
-- Quantized LLM with real-time caching and fallback
-- Feedback loop for collecting (Question, Answer, Rating) pairs
-- Lightweight deployment via Docker or Render
-
-### 🎯 Use Cases
-- Domain-specific assistants (legal, medical, enterprise, etc.)
-- Internal knowledge bots
-- Custom LLM training pipelines
-
-### 🧰 Stack
-LangChain • OpenAI / Hugging Face • FAISS • ChromaDB • FastAPI • RLHF
-
-....
-
+In today’s landscape of ever-expanding information, chatbots too often either hallucinate or struggle to adapt to specialized datasets. Chatter addresses this by combining Retrieval-Augmented Generation (RAG) with Reinforcement Learning from Human Feedback (RLHF) to create a conversational agent that grounds its answers in user-provided documents, learns continuously from ratings, and maintains high performance through caching, model quantization, and a local-fallback mechanism when API quotas are reached.
+Our framework is modular and dataset-agnostic: we ingest and chunk any document set, embed those chunks into a vector index for rapid retrieval, and feed relevant context plus user queries into a quantized language model. Real-time caching and circuit-breaker logic ensure low latency and uninterrupted service, while collected (question, answer, rating) pairs drive an RLHF pipeline that fine-tunes the model to better align with user expectations. Key contributions include (1) a reproducible RAG-RLHF architecture, (2) a lightweight performance layer for cost-effective deployment, and (3) a detailed, role-based guide for team-oriented implementation.
