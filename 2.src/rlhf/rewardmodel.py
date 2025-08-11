@@ -18,6 +18,7 @@ df['input_text'] = df['query'] + " [SEP] " + df['answer']
 
 # Save for training
 df[['input_text', 'label']].to_csv(r'C:\Users\sneha\Downloads\projectdsmm\chatter_files\Project\CodesToUpload\rlhf\reward_dataset.csv', index=False)
+
 print("Prepared reward_dataset.csv")
 
 # === Step 3: Load dataset ===
@@ -48,6 +49,7 @@ def compute_metrics(eval_pred):
         'f1': f1_score(labels, preds, average='binary')  # Use 'binary' for two classes
     }
 
+
 # === Step 7: Training arguments ===
 output_dir = r"C:\Users\sneha\Downloads\projectdsmm\chatter_files\Project\CodesToUpload\rlhf\reward_model"
 
@@ -65,6 +67,7 @@ args = TrainingArguments(
     save_strategy="epoch"
 )
 
+
 # === Step 8: Trainer ===
 trainer = Trainer(
     model=model,
@@ -76,6 +79,7 @@ trainer = Trainer(
     callbacks=[EarlyStoppingCallback(early_stopping_patience=1)]
 
 )
+
 
 # === Step 9: Train and save ===
 if __name__ == "__main__":
