@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-"""1_ChunkingOCRText_hybrid.ipynb
-
-
 # Hybrid Chunking of OCR Text for RAG
 
-## Step 3 Chunking OCR Text hybrid
+## Chunking OCR Text hybrid
 
 The goal of this script is to split long OCR-extracted texts into smaller, manageable chunks of 500 tokens with 50-token overlap. This makes the text suitable for embedding and retrieval in a Retrieval-Augmented Generation (RAG) pipeline.
 
