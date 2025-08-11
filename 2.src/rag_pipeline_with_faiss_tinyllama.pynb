@@ -1,0 +1,236 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "b33c912e-3c28-4d82-ab00-fd226d0d9a58",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Loaded 10022 text chunks.\n",
+      "Encoding text chunks...\n"
+     ]
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "e10a4a351b0643a896c82e59e853f6f5",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "Batches:   0%|          | 0/314 [00:00<?, ?it/s]"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "FAISS index created with 10022 vectors.\n",
+      "FAISS index saved as faiss_index1a.idx\n",
+      "Text chunks saved as texts_list.json\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "from sentence_transformers import SentenceTransformer\n",
+    "import faiss\n",
+    "import numpy as np\n",
+    "import json\n",
+    "\n",
+    "# 1. Load your chunked text CSV file\n",
+    "csv_path = r\"C:\\Users\\choud\\Downloads\\wiki_hybrid_chunks_300.csv\"\n",
+    "df = pd.read_csv(csv_path)\n",
+    "\n",
+    "# Make sure your CSV has a column named 'chunk_text'\n",
+    "texts = df[\"chunk_text\"].tolist()\n",
+    "\n",
+    "print(f\"Loaded {len(texts)} text chunks.\")\n",
+    "\n",
+    "# 2. Load embedding model\n",
+    "embed_model = SentenceTransformer(\"all-MiniLM-L6-v2\")\n",
+    "\n",
+    "# 3. Generate embeddings for all chunks\n",
+    "print(\"Encoding text chunks...\")\n",
+    "embeddings = embed_model.encode(texts, show_progress_bar=True)\n",
+    "embeddings = embeddings.astype('float32')\n",
+    "\n",
+    "# 4. Create FAISS index\n",
+    "dimension = embeddings.shape[1]\n",
+    "index = faiss.IndexFlatL2(dimension)  # L2 distance index\n",
+    "index.add(embeddings)\n",
+    "\n",
+    "print(f\"FAISS index created with {index.ntotal} vectors.\")\n",
+    "\n",
+    "# 5. Save the FAISS index\n",
+    "faiss.write_index(index, \"faiss_index1a.idx\")\n",
+    "print(\"FAISS index saved as faiss_index1a.idx\")\n",
+    "\n",
+    "# 6. Save texts separately so you can retrieve the original text by index later\n",
+    "with open(\"texts_list.json\", \"w\", encoding=\"utf-8\") as f:\n",
+    "    json.dump(texts, f, ensure_ascii=False, indent=2)\n",
+    "print(\"Text chunks saved as texts_list.json\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "fe8d521c-4819-4211-bb11-f4952ce4a9f8",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "9be5701729fc42a68b5dd37766088b30",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "model.safetensors:   0%|          | 0.00/2.20G [00:00<?, ?B/s]"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\choud\\anaconda3\\Lib\\site-packages\\huggingface_hub\\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\\Users\\choud\\.cache\\huggingface\\hub\\models--TinyLlama--TinyLlama-1.1B-Chat-v1.0. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.\n",
+      "To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development\n",
+      "  warnings.warn(message)\n"
+     ]
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "300d9b807f7a4f9ba88b494f0ec30932",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Token indices sequence length is longer than the specified maximum sequence length for this model (2097 > 2048). Running this sequence through the model will result in indexing errors\n",
+      "This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (2048). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Answer:\n",
+      "You are an intelligent assistant. Use the following context to answer the question clearly and briefly. If unsure, say \"I don't know\".\n",
+      "\n",
+      "Context:\n",
+      "com e marieve herington facebook marieve herington on twitter e marieve herington on instagram categories 1988 births living people actresses from los angeles actresses from oakville, ontario canadian child actresses canadian emigrants to the united states canadian film actresses canadian jazz singers canadian television actresses canadian video game actresses canadian voice actresses canadian women jazz singers franco ontarian people jazz musicians from california singers from los angeles university of toronto alumni 21st century canadian actresses 21st century canadian women singers\n",
+      "\n",
+      "and members of the royal jelly orchestra, appearing on two more albums. she sang the theme songs for cbc television s sesame park, nelvana s pippi longstocking and tvontario s marigold s mathemagics. herington moved to los angeles in 2008. 2i the marieve herington band performs in southern california and toronto. their latest album is midnight sessions. on april 14, 2021, herington announced that she became an american citizen. filmography edit animation blossoming timely manor, 2006 e midnight sessions 2010 references 4,44 bio marieve herington. retrieved june 2, 2021. 44 kurek, dominik june 13, 2013. marieve herington gets her start on charlie s last season. metroland media group. retrieved october 8, 2013. by aabcd october 8, 2013. 4,44 marieve herington. retrieved october 8, 2013. jazz musician returns home 2013. marieve herington biography. archived from the original user generated source on march 25, 2017. metroland media group. retrieved october 8, 7. press audio the one with the muses love live season 1 anime english dub review. retrieved april 26, 2016. am happy to say that pretty much from the start marieve herington manages to do that. her honoka may not quite have the same cuteness a very hard to pin down quality and a bit less important in english than in the original japanese, where it seems to make or break the career of many seiyuu also, it s very much a case of mileage variance, so take that comment for what it is and move on as the original, but the drive, the energy, the relentless there s that word again optimism of honoka all shine through. honoka s highs and lows get presented here in their full gusto without any holding back. that s exactly how honoka should be. honoka at times is not so much a character as\n",
+      "\n",
+      "marieve herington born february 22, 1988 is a canadian. marieve herington born february 22, 1988 age 37 oakville, ontario, canadal actress who has appeared in recurring roles on how met your mother, good luck charlie and ever after high. she provides the voice of tilly green on the disney channel show occupations actress singer big city greens as well as voicing animated lead characters in delilah julius and pearlie. in addition to that, she voiced years active 1996 present website marieveherington. com celestia ludenburg in the popular anime video game danganronpa trigger happy havoc, otter in franklin and fifi la fume in tiny toons looniversity. at the age of 12, she began singing in major public performances. since the age of 16, she has been fronting her own jazz ensembles. currently, she performs with the marieve herington band. early life and career herington is a native of oakville, ontario, canada, where she attended st. mildred s lightbourn school. she studied drama at the university of toronto. 2i appearing in a series of canadian tire and kfc commercials, she joined the alliance of canadian cinema, television and radio artists actra at the age of 9. 2i her first jazz group, marieve and her midnight blues, played the annual downtown oakville jazz festival, oakville waterfront festival, restaurants, and other local events. her first album, blossoming, published under her own label maribelle records, was made available on the timely manor label distributed through fontana north universal. 4 she performed on the toronto jazz circuit with babes in jazziand and members of the royal jelly orchestra, appearing on two more albums. she sang the theme songs for cbc television s sesame park, nelvana s pippi longstocking and tvontario s marigold s mathemagics. herington moved to los angeles in 2008. 2i the marieve herington band\n",
+      "\n",
+      "of olivia and john s daughters and third child, born in waltons series chronology in april 1920, then aged 13 in season one. throughout the first few seasons, she is a stubborn, sometimes rebellious teenager who believes others don t understand her. while something of a tomboy who enjoyed playing baseball, mary ellen was also prone to melodrama and vanity, engaging ina rivalry with rich girl martha rose coverdale at the walton s mountain little schoolhouse for the affections of the awkward but warm hearted g. haines david doremus, born 1957. mary ellen matures into a much wiser, strong minded young woman and her childish fantasy of becoming a movie star gives way for a more reasonable and realistic ambition to go into nursing medicine after reading up on it and developing an interest. mary ellen was also influenced by the county nurse, nora jones. she then works to gain an education as a medical worker, and becomes a nurse. however, when she ends up taking care of the people out in the country by herself, she concludes they need more medical expertise than she can offer them and continues studying medicine until she succeeds in becoming a fully fledged doctor. even though some people frowned upon the idea of female doctors and she receives mixed support from her family, she refuses to let this stop her. mary ellen has a special relationship with each of her six siblings, but over the years grows especially close with her younger sister erin. in season five, mary ellen marries dr. curtis willard curt , the town s new physician, and breaks off a prior engagement to medical intern david spencer that she had rushed in to. in season six, they welcome a son, john curtis willard. in season seven, mary ellen receives\n",
+      "\n",
+      "2il 9 she has additional breton heritage. beyoncé s fourth great grandmother, marie frangoise trahan, was born in 1774 in bangor, located on belle jle, france. trahan was a daughter of acadians who had taken refuge on belle lle after the acadian expulsion. the estates of brittany had divided the lands of belle fle to distribute them among 78 other acadian families and the already settled inhabitants. the trahan family lived on belle fle for over ten years before migrating to louisiana, where she married a broussard descendant. 2 beyoncé researched her ancestry and discovered that she is descended from a slave owner who married his slave. 2 her mother is also of distant irish and jewish ancestry. 22 2311241 beyoncé also has belgian ancestry from hainaut province, wallonia and is related to a former mayor of froidchapelle, belgium. 251i26 beyoncé was raised with multiple religious traditions, attending st. john s united methodist church in houston as well as st. mary of the purification catholic church. 271i28ii29 she went to st. mary s catholic montessori school in houston and enrolled in dance classes there. her singing ability was discovered when dance instructor darlette johnson began humming a song and beyoncé finished it, able to hit the high pitched notes. 1 beyoncé s interest in music and performing continued after winning a school talent show at age seven, singing john lennon s imagine to beat 15 16 year olds. ii5 in the fall of 1990, beyoncé enrolled in parker elementary school, a music magnet school in houston, where she performed with the school s choir. 4 she also attended the high school for the performing and visual arts 5 and later alief elsik high school. i beyoncé was also a member of the choir at st. john s united methodist church\n",
+      "\n",
+      "Question: Who is Marieve Herington?\n",
+      "\n",
+      "Answer: Marieve Herington is a Canadian actress.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import faiss\n",
+    "import json\n",
+    "from sentence_transformers import SentenceTransformer\n",
+    "from transformers import AutoTokenizer, AutoModelForCausalLM\n",
+    "import torch\n",
+    "\n",
+    "# Load index and texts\n",
+    "index = faiss.read_index(\"faiss_index1a.idx\")\n",
+    "with open(\"texts_list.json\", \"r\", encoding=\"utf-8\") as f:\n",
+    "    texts = json.load(f)\n",
+    "\n",
+    "embed_model = SentenceTransformer(\"all-MiniLM-L6-v2\")\n",
+    "\n",
+    "device = \"cuda\" if torch.cuda.is_available() else \"cpu\"\n",
+    "tokenizer = AutoTokenizer.from_pretrained(\"TinyLlama/TinyLlama-1.1B-Chat-v1.0\")\n",
+    "llama_model = AutoModelForCausalLM.from_pretrained(\"TinyLlama/TinyLlama-1.1B-Chat-v1.0\").to(device)\n",
+    "\n",
+    "def retrieve_top_k_chunks(query, k=5):\n",
+    "    query_vec = embed_model.encode([query]).astype(\"float32\")\n",
+    "    D, I = index.search(query_vec, k)\n",
+    "    return [texts[i] for i in I[0]]\n",
+    "\n",
+    "def build_prompt(query, chunks):\n",
+    "    context = \"\\n\\n\".join(chunks)\n",
+    "    return f\"\"\"You are an intelligent assistant. Use the following context to answer the question clearly and briefly. If unsure, say \"I don't know\".\n",
+    "\n",
+    "Context:\n",
+    "{context}\n",
+    "\n",
+    "Question: {query}\n",
+    "\n",
+    "Answer:\"\"\"\n",
+    "\n",
+    "def call_tiny_llama(prompt):\n",
+    "    inputs = tokenizer(prompt, return_tensors=\"pt\").to(device)\n",
+    "    with torch.no_grad():\n",
+    "        outputs = llama_model.generate(**inputs, max_new_tokens=200)\n",
+    "    return tokenizer.decode(outputs[0], skip_special_tokens=True)\n",
+    "\n",
+    "query = \"Who is Marieve Herington?\"\n",
+    "chunks = retrieve_top_k_chunks(query)\n",
+    "prompt = build_prompt(query, chunks)\n",
+    "answer = call_tiny_llama(prompt)\n",
+    "\n",
+    "print(\"Answer:\")\n",
+    "print(answer)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ef2dff8f-de12-41a7-9538-60ed5cddabc7",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
