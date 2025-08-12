@@ -23,7 +23,7 @@ import numpy as np
 
 
 # === STEP 1: Load the chunked PaddleOCR CSV file ===
-csv_path = r"C:\Users\manjo\Downloads\Project\extracted_text_PaddleOCR2\cleaned_text_PaddleOCR2_hybrid\chunked_text_PaddleOCR_hybrid.csv"
+csv_path = r"C:\Users\brian\OneDrive\Escritorio\Skills\Programming\Python\Project\extracted_text_PaddleOCR2\cleaned_text_PaddleOCR2\chunked_text_PaddleOCR.csv"
 df = pd.read_csv(csv_path)
 
 # === STEP 2: Load the pre-trained embedding model ===
@@ -45,9 +45,9 @@ index.add(embeddings)  # Add all embeddings to the index
 
 # === STEP 5: Save the FAISS index and metadata ===
 # Save the index file
-faiss_path = r"C:\Users\manjo\Downloads\Project\faiss_index_PaddleOCR.index"
+faiss_path = r"C:\Users\brian\OneDrive\Escritorio\Skills\Programming\Python\Project\faiss_index_PaddleOCR.index"
 faiss.write_index(index, faiss_path)
 
 # Save the metadata (chunk_id, filename, chunk_text) for later use
-metadata_path = r"C:\Users\manjo\Downloads\Project\metadata_PaddleOCR.csv"
+metadata_path = r"C:\Users\brian\OneDrive\Escritorio\Skills\Programming\Python\Project\metadata_PaddleOCR.csv"
 df.to_csv(metadata_path, index=False)
